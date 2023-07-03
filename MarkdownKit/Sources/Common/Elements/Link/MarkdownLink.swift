@@ -46,6 +46,17 @@ open class MarkdownLink: MarkdownLinkElement {
   }
 
   open func match(_ match: NSTextCheckingResult, attributedString: NSMutableAttributedString) {
+
+    // Fix crash 
+    // Issue https://github.com/bmoliveira/MarkdownKit/issues/76
+    guard match.numberOfRanges >= 3 else { return }
+    guard match.range(at: 1).lowerBound < attributedString.length, match.range(at: 1).upperBound < attributedString.length else {
+        return
+    }
+    guard match.range(at: 2).lowerBound < attributedString.length, match.range(at: 2).upperBound < attributedString.length else {
+        return
+    }
+    
     // Remove opening bracket
     attributedString.deleteCharacters(in: NSRange(location: match.range(at: 1).location, length: 1))
 
